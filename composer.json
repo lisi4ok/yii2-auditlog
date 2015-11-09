@@ -1,0 +1,21 @@
+{
+	"name": "lisi4ok/yii2-auditlog",
+	"description": "Yii2 Audit Log. This extension log all models actions -> find/insert/update/delete.",
+	"type": "yii2-extension",
+	"keywords": ["yii2","extension"],
+	"license": "BSD-3-Clause",
+	"authors": [
+		{
+			"name": "Nikola Haralamov",
+			"email": "lisi4ok@gmail.com"
+		}
+	],
+	"require": {
+		"yiisoft/yii2": "*"
+	},
+	"autoload": {
+		"psr-4": {
+			"lisi4ok\\auditlog\\": ""
+		}
+	}
+}
