@@ -1,8 +1,9 @@
 <?php
 /**
  * @package    yiisoft\yii2
- * @subpackage lisi4ok\yii2-auditlog
+ * @subpackage topogluo\yii2-auditlog
  * @author     Nikola Haralamov <lisi4ok@gmail.com>
+ * @author     Ozan Topoglu <ozantopoglu@yahoo.com>
  * @since      2.0.6
  */
 

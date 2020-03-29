@@ -43,7 +43,6 @@ class MyModel extends \yii\db\ActiveRecord
 				'ignoredAttributes' => ['created_at', 'updated_at', 'created_by', 'updated_by'], // default []
 				'ignorePrimaryKey' => true, // default false
 				'ignorePrimaryKeyForActions' => ['insert', 'update'], //default [] Note: (if ignorePrimaryKey set to true, ignorePrimaryKeyForActions is empty will apply for all)
-				'dateTimeFormat' => 'Y-m-d H:i:s', // default 'Y-m-d H:i:s'
 			],
 		];
 	}

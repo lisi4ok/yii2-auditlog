@@ -3,6 +3,7 @@
  * @package    yiisoft\yii2
  * @subpackage ozantopoglu\yii2-auditlog
  * @author     Nikola Haralamov <lisi4ok@gmail.com>
+ * @author     Ozan Topoglu <ozantopoglu@yahoo.com>
  * @since      2.0.6
  */
 
@@ -28,7 +29,6 @@ class LoggableBehavior extends Behavior
 	public $ignorePrimaryKeyForActions = [];
 	public $pk;
 
-	//public $dateTimeFormat = 'Y-m-d H:i:s';
 
 	private static $_oldAttributes;
 	private static $_newAttributes;
