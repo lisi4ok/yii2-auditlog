@@ -17,10 +17,11 @@ class m150813_090217_create_auditlog_table extends Migration
 		$this->createTable(self::TABLE_NAME, [
 			'id' => $this->primaryKey(),
 			'model' => $this->string()->notNull(),
+			'pk'=> $this->integer()->notNull(),
 			'action' => $this->string()->notNull(),
 			'old' => $this->text(),
 			'new' => $this->text(),
-			'at' => $this->datetime(),
+			'at' => $this->integer(),
 			'by' => $this->integer(),
 		]);
 	}

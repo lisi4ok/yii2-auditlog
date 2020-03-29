@@ -1,12 +1,12 @@
 <?php
 /**
  * @package    yiisoft\yii2
- * @subpackage lisi4ok\yii2-auditlog
+ * @subpackage ozantopoglu\yii2-auditlog
  * @author     Nikola Haralamov <lisi4ok@gmail.com>
  * @since      2.0.6
  */
 
-namespace lisi4ok\auditlog\behaviors;
+namespace ozantopoglu\auditlog\behaviors;
 
 use Exception;
 use DateTime;
@@ -14,7 +14,7 @@ use Yii;
 use yii\base\Behavior;
 use yii\base\Application;
 use yii\db\BaseActiveRecord;
-use lisi4ok\auditlog\models\AuditLog;
+use ozantopoglu\auditlog\models\AuditLog;
 
 class LoggableBehavior extends Behavior
 {
@@ -26,8 +26,9 @@ class LoggableBehavior extends Behavior
 	public $ignoredAttributes = [];
 	public $ignorePrimaryKey = false;
 	public $ignorePrimaryKeyForActions = [];
+	public $pk;
 
-	public $dateTimeFormat = 'Y-m-d H:i:s';
+	//public $dateTimeFormat = 'Y-m-d H:i:s';
 
 	private static $_oldAttributes;
 	private static $_newAttributes;
@@ -53,6 +54,7 @@ class LoggableBehavior extends Behavior
 		$dateTime = new DateTime;
 		$this->setNewAttributes($this->owner->attributes);
 		$newAttributes = $this->getNewAttributes();
+		$this->pk = $newAttributes[$this->owner->tableSchema->primaryKey[0]];
 		if ($this->ignorePrimaryKey == true && is_array($this->ignorePrimaryKeyForActions))
 		{
 			if (empty($this->ignorePrimaryKeyForActions))
@@ -79,10 +81,11 @@ class LoggableBehavior extends Behavior
 		}
 		$classNamePath = explode('\\', $this->owner->className());
 		$auditLog->model = end($classNamePath);
+		$auditLog->pk = $this->pk;
 		$auditLog->action = self::ACTION_INSERT;
 		$auditLog->old = null;
 		$auditLog->new = json_encode($newAttributes);
-		$auditLog->at = $dateTime->format($this->dateTimeFormat);
+		$auditLog->at = time();
 		$auditLog->by = $this->getUserId();
 		if ($auditLog->save())
 		{
@@ -103,6 +106,7 @@ class LoggableBehavior extends Behavior
 		$oldAttributes = $this->getOldAttributes();
 		$this->setNewAttributes($this->owner->attributes);
 		$newAttributes = $this->getNewAttributes();
+		$this->pk = $newAttributes[$this->owner->tableSchema->primaryKey[0]];
 		if ($this->ignorePrimaryKey == true && is_array($this->ignorePrimaryKeyForActions))
 		{
 			if (empty($this->ignorePrimaryKeyForActions))
@@ -135,10 +139,11 @@ class LoggableBehavior extends Behavior
 		}
 		$classNamePath = explode('\\', $this->owner->className());
 		$auditLog->model = end($classNamePath);
+		$auditLog->pk = $this->pk;
 		$auditLog->action = self::ACTION_UPDATE;
 		$auditLog->old = json_encode($oldAttributes);
 		$auditLog->new = json_encode($newAttributes);
-		$auditLog->at = $dateTime->format($this->dateTimeFormat);
+		$auditLog->at = time();
 		$auditLog->by = $this->getUserId();
 		if ($auditLog->save())
 		{
@@ -153,6 +158,8 @@ class LoggableBehavior extends Behavior
 		$dateTime = new DateTime;
 		$this->setOldAttributes($this->owner->attributes);
 		$oldAttributes = $this->getOldAttributes();
+		$this->pk = $oldAttributes[$this->owner->tableSchema->primaryKey[0]];
+		$newAttributes = null;
 		if ($this->ignorePrimaryKey == true && is_array($this->ignorePrimaryKeyForActions))
 		{
 			if (empty($this->ignorePrimaryKeyForActions))
@@ -179,10 +186,11 @@ class LoggableBehavior extends Behavior
 		}
 		$classNamePath = explode('\\', $this->owner->className());
 		$auditLog->model = end($classNamePath);
+		$auditLog->pk = $this->pk;
 		$auditLog->action = self::ACTION_DELETE;
 		$auditLog->old = json_encode($oldAttributes);
 		$auditLog->new = null;
-		$auditLog->at = $dateTime->format($this->dateTimeFormat);
+		$auditLog->at = time();
 		$auditLog->by = $this->getUserId();
 		if ($auditLog->save())
 		{
@@ -198,7 +206,7 @@ class LoggableBehavior extends Behavior
 		}
 		else
 		{
-			return null;	
+			return null;
 		}
 	}
 

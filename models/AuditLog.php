@@ -6,7 +6,7 @@
  * @since      2.0.6
  */
 
-namespace lisi4ok\auditlog\models;
+namespace ozantopoglu\auditlog\models;
 
 use Yii;
 use yii\db\ActiveRecord;
@@ -16,6 +16,7 @@ use yii\db\ActiveRecord;
  *
  * @property integer $id
  * @property string $model
+ * @property integer $pk
  * @property string $action
  * @property string $old
  * @property string $new
@@ -32,7 +33,7 @@ class AuditLog extends ActiveRecord
 	public function rules()
 	{
 		return [
-			[['model', 'action'], 'required'],
+			[['model', 'action','pk'], 'required'],
 			[['old', 'new'], 'string'],
 			[['at', 'by'], 'safe'],
 			[['model', 'action'], 'string', 'max' => 255],
@@ -44,6 +45,7 @@ class AuditLog extends ActiveRecord
 		return [
 			'id' => Yii::t('app', 'ID'),
 			'model' => Yii::t('app', 'Model'),
+			'pk' => Yii::t('app', 'Primary Key'),
 			'action' => Yii::t('app', 'Action'),
 			'old' => Yii::t('app', 'Old Attributes'),
 			'new' => Yii::t('app', 'New Attributes'),

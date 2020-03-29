@@ -1,7 +1,7 @@
 Yii2 Audit Log
 ==============
 Yii2 Audit Log. This extension log all models actions -> find/insert/update/delete.
-
+This extention is a fork from Nikola Haralamov's original extention lisi4ok/yii2-auditlog
 Installation
 ------------
 
@@ -10,20 +10,20 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist lisi4ok/yii2-auditlog "*"
+php composer.phar require --prefer-dist ozantopoglu/yii2-auditlog "*"
 ```
 
 or add
 
 ```
-"lisi4ok/yii2-auditlog": "*"
+"ozantopoglu/yii2-auditlog": "*"
 ```
 
 to the require section of your `composer.json` file.
 
 Go to yii app folder. and type:
 ```
-./yii migrate --migrationPath=@vendor/lisi4ok/yii2-auditlog/migrations
+./yii migrate --migrationPath=@vendor/ozantopoglu/yii2-auditlog/migrations
 ```
 
 Usage
@@ -32,7 +32,7 @@ Usage
 <?php
 namespace app\models;
 use Yii;
-use lisi4ok\auditlog\behaviors\LoggableBehavior;
+use ozantopoglu\auditlog\behaviors\LoggableBehavior;
 
 class MyModel extends \yii\db\ActiveRecord
 {
