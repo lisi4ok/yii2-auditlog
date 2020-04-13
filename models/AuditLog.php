@@ -11,7 +11,8 @@ namespace ozantopoglu\auditlog\models;
 
 use Yii;
 use yii\db\ActiveRecord;
-
+use yii\helpers\Json;
+use app\models\User;
 /**
  * This is the model class for table "auditlog".
  *
@@ -53,5 +54,50 @@ class AuditLog extends ActiveRecord
 			'at' => Yii::t('app', 'Changed At'),
 			'by' => Yii::t('app', 'Changed By'),
 		];
+	}
+
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getAuthor()
+	{
+		 return $this->hasOne(User::className(), ['id' => 'by']);
+	}
+
+
+	public static function compare($model,$pk,$from=0,$to=0, $formatter=[]) {
+		$model = explode('\\', $model);
+		$model = end($model);
+		if ($to == 0 ) $to = 9999999999;
+
+		$old =  AuditLog::find()
+					->where(['model'=>$model,'pk'=>$pk])
+					->andWhere(['>=','at',$from])
+					->one();
+
+		$new=  AuditLog::find()
+					->where(['model'=>$model,'pk'=>$pk])
+					->andWhere(['<=','at',$to])
+					->orderBy('id DESC')
+					->one();
+		$result = [];
+		if (isset($old) && isset($new)) {
+			$old_values = Json::decode($old['old']) ;
+			$new_values = Json::decode($new['new']) ;
+			$old_change = array_diff_assoc($old_values, $new_values);
+			$new_change = array_diff_assoc($new_values, $old_values);
+
+
+			foreach ($old_values as $key=>$value){
+				if (isset($formatter[$key])) $format = $formatter[$key]; else $format = function ($value) {return $value;} ;
+				if (isset ($old_change[$key]) || isset ($new_change[$key])) {
+					$result[$key] ['old'] = $format($old_change[$key]);
+					$result[$key] ['new'] = $format($new_change[$key]);
+				//	$result[$key] = 'CHANGED: '.$old_change[$key]. ' --> '. $new_change[$key];
+			} else $result[$key] = $format($value);
+			}
+		}
+		return $result;
 	}
 }
