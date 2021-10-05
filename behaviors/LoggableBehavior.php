@@ -103,6 +103,7 @@ class LoggableBehavior extends Behavior
 	{
 		$auditLog = new AuditLog;
 		$dateTime = new DateTime;
+
 		$oldAttributes = $this->getOldAttributes();
 		$this->setNewAttributes($this->owner->attributes);
 		$newAttributes = $this->getNewAttributes();

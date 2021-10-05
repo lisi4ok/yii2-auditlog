@@ -70,21 +70,31 @@ class AuditLog extends ActiveRecord
 		$model = explode('\\', $model);
 		$model = end($model);
 		if ($to == 0 ) $to = 9999999999;
+		$logs= AuditLog::find()
+			->where(['model'=>$model,'pk'=>$pk])
+			->andWhere(['>=','at',$from])
+			->andWhere(['<','at',$to])
+			->cache(10)
+			->all();
 
-		$old =  AuditLog::find()
-					->where(['model'=>$model,'pk'=>$pk])
-					->andWhere(['>=','at',$from])
-					->one();
+		$old = current($logs);
+		$new = end($logs);
 
-		$new=  AuditLog::find()
-					->where(['model'=>$model,'pk'=>$pk])
-					->andWhere(['<=','at',$to])
-					->orderBy('id DESC')
-					->one();
 		$result = [];
-		if (isset($old) && isset($new)) {
+
+		if (isset($old) && isset($new) && $new != false && $old != false) {
 			$old_values = Json::decode($old['old']) ;
 			$new_values = Json::decode($new['new']) ;
+			
+			if (!is_array($old_values)) {
+				$keys=array_keys($new_values);
+				$old_values=array_fill_keys($keys,'');
+			}
+			if (!is_array($new_values)) {
+				$keys=array_keys($old_values);
+				$new_values=array_fill_keys($keys,'');
+			}
+
 			$old_change = array_diff_assoc($old_values, $new_values);
 			$new_change = array_diff_assoc($new_values, $old_values);
 
