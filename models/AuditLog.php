@@ -39,6 +39,14 @@ class AuditLog extends ActiveRecord
 			[['old', 'new'], 'string'],
 			[['at', 'by'], 'safe'],
 			[['model', 'action'], 'string', 'max' => 255],
+			// an inline validator defined as an anonymous function
+            ['new', function ($attribute, $params, $validator) {
+				$delta = AuditLog::delta($this,$this,False);
+
+                if (count($delta) === 0) {
+                    $this->addError($attribute, 'There is no change in attributes. Audit Log is not valid');
+                }
+            }],
 		];
 	}
 
@@ -80,6 +88,11 @@ class AuditLog extends ActiveRecord
 		$old = current($logs);
 		$new = end($logs);
 
+
+		return AuditLog::delta($old,$new);
+	}
+
+	public static function delta($old,$new, $includeUnchanged = True){
 		$result = [];
 
 		if (isset($old) && isset($new) && $new != false && $old != false) {
@@ -105,9 +118,11 @@ class AuditLog extends ActiveRecord
 					$result[$key] ['old'] = $format($old_change[$key]);
 					$result[$key] ['new'] = $format($new_change[$key]);
 				//	$result[$key] = 'CHANGED: '.$old_change[$key]. ' --> '. $new_change[$key];
-			} else $result[$key] = $format($value);
+				} else {
+					if ($includeUnchanged)  $result[$key] = $format($value); 
+				}
 			}
-		}
 		return $result;
+		}
 	}
 }
